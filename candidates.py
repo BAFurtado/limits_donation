@@ -16,6 +16,9 @@ class Candidates:
     def election_fail(self):
         self.elected = False
 
+    def get_elected_status(self):
+        return self.elected
+
     def update_mandates(self):
         self.total_elections += 1
 
