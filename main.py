@@ -6,17 +6,17 @@ import candidates
 import voters
 from operator import methodcaller
 
-num_voters = 1000
-num_candidates = 100
-open_positions = int(num_candidates * .1)
+# Model parameters
+num_voters = 20000
+num_candidates = 20000
+open_positions = 70 # int(num_candidates * .1)
 percentage_with_chances = .2
 num_financers = 200
 num_periods = 5
 percentage_to_donate = financers.random.random()
 
+
 # Generate agents
-
-
 def generate(nv, nc, nf):
     my_voters = []
     my_candidates = []
@@ -29,12 +29,11 @@ def generate(nv, nc, nf):
         my_financers.append(financers.Financers(financer))
     return my_voters, my_candidates, my_financers
 
+# Call agents generation
 my_voters, my_candidates, my_financers = generate(num_voters, num_candidates, num_financers)
 
 
 # Initiate time frame
-
-
 def run_the_game(periods, a_voters, a_candidates, a_financers, percentage, positions):
     for period in range(periods):
 
@@ -69,10 +68,11 @@ def run_the_game(periods, a_voters, a_candidates, a_financers, percentage, posit
                 c.election_success()
                 this_term -= 1
 
+
+# Running the game
 run_the_game(num_periods, my_voters, my_candidates, my_financers, percentage_to_donate, open_positions)
 
-# Printing
-
+# Printing results
 print("Parametros")
 print('Numero eleitores %s, Candidatos %s, Financiadores %s, Periodos %s, Vagas %s' %
       (num_voters, num_candidates, num_financers, num_periods, open_positions))
