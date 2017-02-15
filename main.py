@@ -14,10 +14,10 @@ import financers
 p_donors = 0.0016                 # % of general universe
 p_candidates = 0.0028             # % of general universe
 
-num_citizens = 100000
+num_citizens = 1000000
 num_candidates = int(num_citizens * p_candidates)
 num_donors = int(num_citizens * p_donors)
-number_runs = 10
+number_runs = 100
 
 income_percentage_case1 = .1
 ceiling_amount = .1
@@ -66,6 +66,11 @@ def run_the_game(my_agents, num_candidates, num_donors):
     average_gini = {'Case 1 Percentage ceiling': [],
                     'Case 2 Nominal ceiling': [],
                     'Case 3 No ceiling': []}
+
+    average_donation = {'Case 1 Percentage ceiling': [],
+                    'Case 2 Nominal ceiling': [],
+                    'Case 3 No ceiling': []}
+
     for each in cases.keys():
         print('')
         print('{}: {}'.format(each, cases[each][0]))
@@ -85,10 +90,11 @@ def run_the_game(my_agents, num_candidates, num_donors):
                 c.update_treasure(d.donate(amount=a))
             else:
                 c.update_treasure(d.donate(percentage=(percentages[i])))
-        gini = call_plot([d.get_cumulative_donation() for d in don_], each, cases[each][2])
+        gini, m = call_plot([d.get_cumulative_donation() for d in don_], each, cases[each][2])
         average_gini[each].append(gini)
+        average_donation[each].append(m)
 
-    return cand_, don_, average_gini
+    return cand_, don_, average_gini, average_donation
 
 # Simulation
 # Call agents generation
@@ -99,17 +105,18 @@ my_agents = generate_citizens(num_citizens, income_list)
 def call_plot(values, case, color):
     some_results = GiniCoef.Gini(values)
     print("{} GINI is {:.4f}".format(case, some_results[0]))
+    m = mean(values)
     if case == 'Ex-ante':
-        print('Renda média - {}: {:.4f}'.format(case, mean(values)))
+        print('Renda média - {}: {:.4f}'.format(case, m))
     else:
-        print('Valor doação médio - {}: {:.4f}'.format(case, mean(values)))
+        print('Valor doação médio - {}: {:.4f}'.format(case, m))
 
     # Plot
     plt.plot([0, 100], [0, 100], '--')
     plt.plot(some_results[1][0], some_results[1][1], color=color, label=case)
     plt.xlabel('% of population')
     plt.ylabel('% of values')
-    return some_results[0]
+    return some_results[0], m
 
 # Ex-ante GINI
 call_plot(income_list, 'Ex-ante', 'black')
@@ -119,8 +126,12 @@ average_gini = {'Case 1 Percentage ceiling': [],
                 'Case 2 Nominal ceiling': [],
                 'Case 3 No ceiling': []}
 
+average_donation = {'Case 1 Percentage ceiling': [],
+                'Case 2 Nominal ceiling': [],
+                'Case 3 No ceiling': []}
+
 for i in range(number_runs):
-    cand, don, gini = run_the_game(my_agents, num_candidates, num_donors)
+    cand, don, gini, donation = run_the_game(my_agents, num_candidates, num_donors)
     print('')
     print('Total citizens {}'.format(len(my_agents)))
     print('Number of candidates {}'.format(len(cand)))
@@ -129,12 +140,16 @@ for i in range(number_runs):
     print('Time spent in seconds {:.2f}'.format(time.time() - start))
     for each in gini.keys():
         average_gini[each].append(gini[each])
+        average_donation[each].append(donation[each])
 
 print('')
 print('Overall Gini averages')
-print('Case 1 Percentage ceiling mean {:.4}'.format(mean(average_gini['Case 1 Percentage ceiling'])))
-print('Case 2 Nominal ceiling mean {:.4}'.format(mean(average_gini['Case 2 Nominal ceiling'])))
-print('Case 3 No ceiling mean {:.4}'.format(mean(average_gini['Case 3 No ceiling'])))
+print('Case 1 Percentage ceiling mean {:.4} Donated value {:.4}'.format(mean(average_gini['Case 1 Percentage ceiling']),
+                                                                        mean(average_donation['Case 1 Percentage ceiling'])))
+print('Case 2 Nominal ceiling mean {:.4} Donated value {:.4}'.format(mean(average_gini['Case 2 Nominal ceiling']),
+                                                 mean(average_donation['Case 2 Nominal ceiling'])))
+print('Case 3 No ceiling mean {:.4} Donated value {:.4}'.format(mean(average_gini['Case 3 No ceiling']),
+                                            mean(average_donation['Case 3 No ceiling'])))
 
 dark_patch = mpatches.Patch(color='black', label='Ex-ante pop. income')
 blue_patch = mpatches.Patch(color='blue', label='Case 1 Percentage ceiling')
