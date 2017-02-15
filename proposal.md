@@ -64,6 +64,7 @@ linhas de investigação
 ** SKYPE February 2017 **
 Perguntas
 1. Qual o fenômeno que se quer investigar?
+
 Dinamica da movimentação de dinheiro, flutuação e variação na concentração relativa do destino do dinheiro em função de
 variações tipificadas de comportamento
 
@@ -71,6 +72,7 @@ regras de financiamento
 concentração/dispersão financiamento e candidatos
 
 dados TSE quem foi eleito com qual recurso/prestação de contas
+
 análise empírica (concentração) 2014 PJ excepcionalmente caras concentração fontes poucas empresas
 TSE quem não foi eleito
 Felipe Lima
@@ -91,6 +93,13 @@ parametros
 1. as regras que presidem o financiamento teto é proporcional do doador 10% da renda [se fosse PJ seria 2% faturamento]
 2. em comparação a um teto nominal
 3. sem teto
+
+pseucodigo
+1. gera cidadãos com renda similar a brasileira
+2. escolhe doadores
+3. escolhe percentual doação
+4. faz doação
+5. calcula concentração doação
 
 * 3o. distritos 70 e 8 (hipótese de maiores distritos, dinheiro importa mais) deputado federal
 

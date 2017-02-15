@@ -1,21 +1,12 @@
-class Candidates:
+import citizens
 
-    def __init__(self, id):
-        self.id = id
+
+class Candidates(citizens.Citizens):
+
+    def start(self):
         self.treasure = 0
         self.elected = False
         self.total_elections = 0
-        self.income = 0
-
-    # Retrieve information
-    def get_treasure(self):
-        return self.treasure
-
-    def get_elected_status(self):
-        return self.elected
-
-    def get_total_elections(self):
-        return self.total_elections
 
     # Record new status
     def election_success(self):
@@ -32,5 +23,21 @@ class Candidates:
     def update_treasure(self, amount):
         self.treasure += amount
 
+    def update_income(self, amount):
+        self.income += amount
+
+    def get_treasure(self):
+        return self.treasure
+
+    def get_elected_status(self):
+        return self.elected
+
+    def get_total_elections(self):
+        return self.total_elections
+
+    @classmethod
+    def convert_to_candidate(cls, obj):
+        obj.__class__ = Candidates
+
     def __str__(self):
-        return 'Candidato %s, Numero mandatos %s, Caixa %.2f' % (self.id, self.get_total_elections(), self.treasure)
+        return 'Candidato {} Caixa de Campanha {:.2f}'.format(self.id, self.treasure)
