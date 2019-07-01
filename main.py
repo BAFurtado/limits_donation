@@ -86,6 +86,7 @@ def run_the_game(my_agents, num_candidates, num_donors):
             if each == 'Case 1 Percentage ceiling':
                 c.update_treasure(d.donate(percentage=(percentages[i] * cases[each][1])))
             elif each == 'Case 2 Nominal ceiling':
+                # Choosing value from 0 to nominal ceiling
                 a = random.uniform(0, cases[each][1])
                 c.update_treasure(d.donate(amount=a))
             else:
