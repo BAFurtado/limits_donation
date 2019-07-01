@@ -8,22 +8,7 @@ import GiniCoef
 import candidates
 import citizens
 import financers
-
-# Empirical data              http://exame.abril.com.br/brasil/campanhas-tem-duas-vezes-mais-candidatos-que-doadores/
-# Model parameters
-p_donors = 0.0016                 # % of general universe
-p_candidates = 0.0028             # % of general universe
-
-num_citizens = 1000000
-num_candidates = int(num_citizens * p_candidates)
-num_donors = int(num_citizens * p_donors)
-number_runs = 100
-
-income_percentage_case1 = .1
-ceiling_amount = .1
-
-# Parameters Beta distribution chosen to reflect a GINI coefficient of around .47
-income_list = random.beta(1, 8, num_citizens)
+import parameters
 
 
 # Generate agents
@@ -59,8 +44,8 @@ def run_the_game(my_agents, num_candidates, num_donors):
     print('')
     print('Testing three cases')
 
-    cases = {'Case 1 Percentage ceiling': ['Donation ceiling set at 10% of income', income_percentage_case1, 'blue'],
-             'Case 2 Nominal ceiling': ['Donation ceiling set at Nominal value of .1', ceiling_amount, 'red'],
+    cases = {'Case 1 Percentage ceiling': ['Donation ceiling set at 10% of income', parameters.income_percentage_case1, 'blue'],
+             'Case 2 Nominal ceiling': ['Donation ceiling set at Nominal value of .1', parameters.ceiling_amount, 'red'],
              'Case 3 No ceiling': ['Donation with no ceiling', None, 'green']}
 
     average_gini = {'Case 1 Percentage ceiling': [],
@@ -97,11 +82,6 @@ def run_the_game(my_agents, num_candidates, num_donors):
 
     return cand_, don_, average_gini, average_donation
 
-# Simulation
-# Call agents generation
-start = time.time()
-my_agents = generate_citizens(num_citizens, income_list)
-
 
 def call_plot(values, case, color):
     some_results = GiniCoef.Gini(values)
@@ -119,43 +99,54 @@ def call_plot(values, case, color):
     plt.ylabel('% of values')
     return some_results[0], m
 
-# Ex-ante GINI
-call_plot(income_list, 'Ex-ante', 'black')
 
-# Running the game
-average_gini = {'Case 1 Percentage ceiling': [],
-                'Case 2 Nominal ceiling': [],
-                'Case 3 No ceiling': []}
+def repetition():
+    # Running the game
+    start = time.time()
+    my_agents = generate_citizens(parameters.num_citizens, parameters.income_list)
+    # Ex-ante GINI
+    call_plot(parameters.income_list, 'Ex-ante', 'black')
+    # Empty dictionaries
+    average_gini = {'Case 1 Percentage ceiling': [],
+                    'Case 2 Nominal ceiling': [],
+                    'Case 3 No ceiling': []}
 
-average_donation = {'Case 1 Percentage ceiling': [],
-                'Case 2 Nominal ceiling': [],
-                'Case 3 No ceiling': []}
+    average_donation = {'Case 1 Percentage ceiling': [],
+                        'Case 2 Nominal ceiling': [],
+                        'Case 3 No ceiling': []}
 
-for i in range(number_runs):
-    cand, don, gini, donation = run_the_game(my_agents, num_candidates, num_donors)
+    # Numerous runs
+    for i in range(parameters.number_runs):
+        cand, don, gini, donation = run_the_game(my_agents, parameters.num_candidates, parameters.num_donors)
+        print('')
+        print('Total citizens {}'.format(len(my_agents)))
+        print('Number of candidates {}'.format(len(cand)))
+        print('Number of donors {}'.format(len(don)))
+        print('')
+        print('Time spent in seconds {:.2f}'.format(time.time() - start))
+        for each in gini.keys():
+            average_gini[each].append(gini[each])
+            average_donation[each].append(donation[each])
+
     print('')
-    print('Total citizens {}'.format(len(my_agents)))
-    print('Number of candidates {}'.format(len(cand)))
-    print('Number of donors {}'.format(len(don)))
-    print('')
-    print('Time spent in seconds {:.2f}'.format(time.time() - start))
-    for each in gini.keys():
-        average_gini[each].append(gini[each])
-        average_donation[each].append(donation[each])
+    print('Overall Gini averages')
+    print('Case 1 Percentage ceiling mean {:.4} Donated value {:.4}'.format(mean(average_gini['Case 1 Percentage ceiling']),
+                                                                            mean(average_donation['Case 1 Percentage ceiling'])))
+    print('Case 2 Nominal ceiling mean {:.4} Donated value {:.4}'.format(mean(average_gini['Case 2 Nominal ceiling']),
+                                                     mean(average_donation['Case 2 Nominal ceiling'])))
+    print('Case 3 No ceiling mean {:.4} Donated value {:.4}'.format(mean(average_gini['Case 3 No ceiling']),
+                                                mean(average_donation['Case 3 No ceiling'])))
 
-print('')
-print('Overall Gini averages')
-print('Case 1 Percentage ceiling mean {:.4} Donated value {:.4}'.format(mean(average_gini['Case 1 Percentage ceiling']),
-                                                                        mean(average_donation['Case 1 Percentage ceiling'])))
-print('Case 2 Nominal ceiling mean {:.4} Donated value {:.4}'.format(mean(average_gini['Case 2 Nominal ceiling']),
-                                                 mean(average_donation['Case 2 Nominal ceiling'])))
-print('Case 3 No ceiling mean {:.4} Donated value {:.4}'.format(mean(average_gini['Case 3 No ceiling']),
-                                            mean(average_donation['Case 3 No ceiling'])))
+    dark_patch = mpatches.Patch(color='black', label='Ex-ante pop. income')
+    blue_patch = mpatches.Patch(color='blue', label='Case 1 Percentage ceiling')
+    red_patch = mpatches.Patch(color='red', label='Case 2 Nominal ceiling')
+    green_patch = mpatches.Patch(color='green', label='Case 3 No ceiling')
 
-dark_patch = mpatches.Patch(color='black', label='Ex-ante pop. income')
-blue_patch = mpatches.Patch(color='blue', label='Case 1 Percentage ceiling')
-red_patch = mpatches.Patch(color='red', label='Case 2 Nominal ceiling')
-green_patch = mpatches.Patch(color='green', label='Case 3 No ceiling')
+    plt.legend(handles=[dark_patch, blue_patch, red_patch, green_patch], loc='upper left')
+    plt.savefig('p1')
 
-plt.legend(handles=[dark_patch, blue_patch, red_patch, green_patch], loc='upper left')
-plt.savefig('p1')
+
+if __name__ == '__main__':
+    # Adjust parameters in parameters.py
+    # Call the simulation
+    repetition()
