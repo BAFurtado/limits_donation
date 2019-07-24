@@ -8,6 +8,7 @@ class Financers(citizens.Citizens):
 
     def donate(self, percentage=None, amount=None):
         if amount is None:
+            # Donate percentage of income
             self.cumulative_donation(self.income * percentage)
             r = self.income * percentage
             self.income -= self.income * percentage
