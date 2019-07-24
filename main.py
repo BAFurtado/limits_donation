@@ -2,7 +2,7 @@ import time
 
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
-from numpy import random, mean
+from numpy import random, mean, median
 
 import GiniCoef
 import candidates
@@ -44,8 +44,11 @@ def run_the_game(my_agents, num_candidates, num_donors):
     print('')
     print('Testing three cases')
 
-    cases = {'Case 1 Percentage ceiling': ['Donation ceiling set at 10% of income', parameters.income_percentage_case1, 'blue'],
-             'Case 2 Nominal ceiling': ['Donation ceiling set at Nominal value of .1', parameters.ceiling_amount, 'red'],
+    cases = {'Case 1 Percentage ceiling': ['Donation ceiling set at {}% of income'
+                                               .format(parameters.income_percentage_case1 * 100),
+                                           parameters.income_percentage_case1, 'blue'],
+             'Case 2 Nominal ceiling': ['Donation ceiling set at Nominal value of {}'
+                                            .format(parameters.ceiling_amount), parameters.ceiling_amount, 'red'],
              'Case 3 No ceiling': ['Donation with no ceiling', None, 'green']}
 
     average_gini = {'Case 1 Percentage ceiling': [],
@@ -86,11 +89,11 @@ def run_the_game(my_agents, num_candidates, num_donors):
 def call_plot(values, case, color):
     some_results = GiniCoef.Gini(values)
     print("{} GINI is {:.4f}".format(case, some_results[0]))
-    m = mean(values)
+    m = median(values)
     if case == 'Ex-ante':
-        print('Renda média - {}: {:.4f}'.format(case, m))
+        print('Renda mediana - {}: {:.4f}'.format(case, m))
     else:
-        print('Valor doação médio - {}: {:.4f}'.format(case, m))
+        print('Valor doação mediano - {}: {:.4f}'.format(case, m))
 
     # Plot
     plt.plot([0, 100], [0, 100], '--')
@@ -130,12 +133,12 @@ def repetition():
 
     print('')
     print('Overall Gini averages')
-    print('Case 1 Percentage ceiling mean {:.4} Donated value {:.4}'.format(mean(average_gini['Case 1 Percentage ceiling']),
-                                                                            mean(average_donation['Case 1 Percentage ceiling'])))
-    print('Case 2 Nominal ceiling mean {:.4} Donated value {:.4}'.format(mean(average_gini['Case 2 Nominal ceiling']),
-                                                     mean(average_donation['Case 2 Nominal ceiling'])))
-    print('Case 3 No ceiling mean {:.4} Donated value {:.4}'.format(mean(average_gini['Case 3 No ceiling']),
-                                                mean(average_donation['Case 3 No ceiling'])))
+    print('Case 1 Percentage ceiling: median Gini {:.4} Donated value median {:.4}'.format(median(average_gini['Case 1 Percentage ceiling']),
+                                                                            median(average_donation['Case 1 Percentage ceiling'])))
+    print('Case 2 Nominal ceiling: median Gini {:.4} Donated value {:.4}'.format(median(average_gini['Case 2 Nominal ceiling']),
+                                                     median(average_donation['Case 2 Nominal ceiling'])))
+    print('Case 3 No ceiling: median Gini{:.4} Donated value median {:.4}'.format(median(average_gini['Case 3 No ceiling']),
+                                                median(average_donation['Case 3 No ceiling'])))
 
     dark_patch = mpatches.Patch(color='black', label='Ex-ante pop. income')
     blue_patch = mpatches.Patch(color='blue', label='Case 1 Percentage ceiling')

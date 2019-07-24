@@ -4,7 +4,7 @@
 
 This is a simulation code that accompanies the text above (to be) published at Boletim de Análise de Políticas Públicas do Ipea (www.ipea.gov.br). 2019. 
 
-#### By Bernardo Alves Furtado (code) and Bruno P. W. Reis (conception)
+#### By Bernardo Alves Furtado and Bruno P. W. Reis 
 
 #### To run
 
