@@ -133,20 +133,27 @@ def repetition():
 
     print('')
     print('Overall Gini averages')
-    print('Case 1 Percentage ceiling: median Gini {:.4} Donated value median {:.4}'.format(median(average_gini['Case 1 Percentage ceiling']),
-                                                                            median(average_donation['Case 1 Percentage ceiling'])))
-    print('Case 2 Nominal ceiling: median Gini {:.4} Donated value {:.4}'.format(median(average_gini['Case 2 Nominal ceiling']),
-                                                     median(average_donation['Case 2 Nominal ceiling'])))
-    print('Case 3 No ceiling: median Gini{:.4} Donated value median {:.4}'.format(median(average_gini['Case 3 No ceiling']),
-                                                median(average_donation['Case 3 No ceiling'])))
+    print('Case 1 Percentage ceiling: median Gini {:.4} Donated value median {:.4}'
+          .format(median(average_gini['Case 1 Percentage ceiling']),
+                  median(average_donation['Case 1 Percentage ceiling'])))
+    print('Case 2 Nominal ceiling: median Gini {:.4} Donated value {:.4}'
+          .format(median(average_gini['Case 2 Nominal ceiling']),
+                  median(average_donation['Case 2 Nominal ceiling'])))
+    print('Case 3 No ceiling: median Gini{:.4} Donated value median {:.4}'
+          .format(median(average_gini['Case 3 No ceiling']),
+                  median(average_donation['Case 3 No ceiling'])))
 
     dark_patch = mpatches.Patch(color='black', label='Ex-ante pop. income')
-    blue_patch = mpatches.Patch(color='blue', label='Case 1 Percentage ceiling')
-    red_patch = mpatches.Patch(color='red', label='Case 2 Nominal ceiling')
+    blue_patch = mpatches.Patch(color='blue', label='Case 1 Percentage ceiling: {}%'
+                                .format(parameters.income_percentage_case1 * 100))
+    red_patch = mpatches.Patch(color='red', label='Case 2 Nominal ceiling: {}'.format(parameters.ceiling_amount))
     green_patch = mpatches.Patch(color='green', label='Case 3 No ceiling')
 
-    plt.legend(handles=[dark_patch, blue_patch, red_patch, green_patch], loc='upper left')
-    plt.savefig('p1')
+    plt.legend(handles=[dark_patch, blue_patch, red_patch, green_patch], loc='upper left', frameon=False)
+    plt.savefig('fig_perc{}_nom{}.png'.format(parameters.income_percentage_case1, parameters.ceiling_amount),
+                format='png')
+    plt.savefig('fig_perc{}_nom{}.pdf'.format(parameters.income_percentage_case1, parameters.ceiling_amount),
+                format='pdf', transparent=True)
 
 
 if __name__ == '__main__':
