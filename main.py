@@ -63,6 +63,8 @@ def run_the_game(my_agents, num_candidates, num_donors):
         print('{}: {}'.format(each, cases[each][0]))
 
         cand_, don_ = reset_universe(my_agents, num_candidates, num_donors)
+        print('Number of candidates {}'.format(len(cand_)))
+        print('Number of donors {}'.format(len(don_)))
         # Reseting total donated
         [d.reset_total_donated() for d in don_]
         # Donation
@@ -83,21 +85,23 @@ def run_the_game(my_agents, num_candidates, num_donors):
         average_gini[each].append(gini)
         average_donation[each].append(m)
 
-    return cand_, don_, average_gini, average_donation
+    return average_gini, average_donation
 
 
 def call_plot(values, case, color):
     some_results = GiniCoef.Gini(values)
     print("{} GINI is {:.4f}".format(case, some_results[0]))
     m = median(values)
+    lw = .1
     if case == 'Ex-ante':
+        lw = 1.5
         print('Renda mediana - {}: {:.4f}'.format(case, m))
     else:
         print('Valor doação mediano - {}: {:.4f}'.format(case, m))
 
     # Plot
-    plt.plot([0, 100], [0, 100], '--')
-    plt.plot(some_results[1][0], some_results[1][1], color=color, label=case)
+    plt.plot([0, 100], [0, 100], '--', color='yellow')
+    plt.plot(some_results[1][0], some_results[1][1], color=color, label=case, lw=lw)
     plt.xlabel('% of population')
     plt.ylabel('% of values')
     return some_results[0], m
@@ -120,11 +124,10 @@ def repetition():
 
     # Numerous runs
     for i in range(parameters.number_runs):
-        cand, don, gini, donation = run_the_game(my_agents, parameters.num_candidates, parameters.num_donors)
+        gini, donation = run_the_game(my_agents, parameters.num_candidates, parameters.num_donors)
         print('')
         print('Total citizens {}'.format(len(my_agents)))
-        print('Number of candidates {}'.format(len(cand)))
-        print('Number of donors {}'.format(len(don)))
+
         print('')
         print('Time spent in seconds {:.2f}'.format(time.time() - start))
         for each in gini.keys():
@@ -148,9 +151,9 @@ def repetition():
 
     with open('output.csv', 'a') as f:
         f.write('perc_{}_nominal_{}\n'.format(parameters.income_percentage_case1, parameters.ceiling_amount))
-        f.write('{:.6f};{:.6f}\n'.format(m_g_1, m_d_1))
-        f.write('{:.6f};{:.6f}\n'.format(m_g_2, m_d_2))
-        f.write('{:.6f};{:.6f}\n'.format(m_g_3, m_d_3))
+        f.write('{:.12f};{:.12f}\n'.format(m_g_1, m_d_1))
+        f.write('{:.12f};{:.12f}\n'.format(m_g_2, m_d_2))
+        f.write('{:.12f};{:.12f}\n'.format(m_g_3, m_d_3))
 
     dark_patch = mpatches.Patch(color='black', label='Ex-ante pop. income')
     blue_patch = mpatches.Patch(color='blue', label='Case 1 Percentage ceiling: {}%'
@@ -159,9 +162,11 @@ def repetition():
     green_patch = mpatches.Patch(color='green', label='Case 3 No ceiling')
 
     plt.legend(handles=[dark_patch, blue_patch, red_patch, green_patch], loc='upper left', frameon=False)
-    plt.savefig('figures_png/fig_perc{}_nom{}.png'.format(parameters.income_percentage_case1, parameters.ceiling_amount),
+    plt.savefig('figures_png/fig_perc{}_nom{}.png'
+                .format(parameters.income_percentage_case1, parameters.ceiling_amount),
                 format='png')
-    plt.savefig('figures_pdf/fig_perc{}_nom{}.pdf'.format(parameters.income_percentage_case1, parameters.ceiling_amount),
+    plt.savefig('figures_pdf/fig_perc{}_nom{}.pdf'
+                .format(parameters.income_percentage_case1, parameters.ceiling_amount),
                 format='pdf', transparent=True)
 
 
@@ -179,7 +184,9 @@ def overriding_parameters():
 if __name__ == '__main__':
     # Adjust parameters in parameters.py
     # Call the simulation
-    # repetition()
-    overriding_parameters()
+    repetition()
+
+    # To run multiple comparatives, use the function below and set them in the respective function above
+    # overriding_parameters()
 
 
