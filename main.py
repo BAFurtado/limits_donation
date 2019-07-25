@@ -80,7 +80,8 @@ def run_the_game(my_agents, num_candidates, num_donors):
                 a = random.uniform(0, cases[each][1])
                 c.update_treasure(d.donate(amount=a))
             else:
-                c.update_treasure(d.donate(percentage=(percentages[i])))
+                a = random.uniform(0, 1)
+                c.update_treasure(d.donate(amount=a))
         gini, m = call_plot([d.get_cumulative_donation() for d in don_], each, cases[each][2])
         average_gini[each].append(gini)
         average_donation[each].append(m)
@@ -184,9 +185,9 @@ def overriding_parameters():
 if __name__ == '__main__':
     # Adjust parameters in parameters.py
     # Call the simulation
-    repetition()
+    # repetition()
 
     # To run multiple comparatives, use the function below and set them in the respective function above
-    # overriding_parameters()
+    overriding_parameters()
 
 
