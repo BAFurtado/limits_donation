@@ -73,14 +73,17 @@ def run_the_game(my_agents, num_candidates, num_donors):
         for i, d in enumerate(don_):
             c = random.choice(cand_)
             # Donation based on percentage of income or given amount
+            a = random.uniform(0, 1)
             if each == 'Case 1 Percentage ceiling':
-                c.update_treasure(d.donate(percentage=(random.uniform(0, cases[each][1]))))
+                # Choosing value from 0 to 1 and truncating at ceiling
+                if a > cases[each][1]:
+                    a = cases[each][1]
+                c.update_treasure(d.donate(percentage=a))
             elif each == 'Case 2 Nominal ceiling':
-                # Choosing value from 0 to nominal ceiling
-                a = random.uniform(0, cases[each][1])
+                if a > cases[each][1]:
+                    a = cases[each][1]
                 c.update_treasure(d.donate(amount=a))
             else:
-                a = random.uniform(0, 1)
                 c.update_treasure(d.donate(amount=a))
         gini, m = call_plot([d.get_cumulative_donation() for d in don_], each, cases[each][2])
         average_gini[each].append(gini)
