@@ -65,26 +65,25 @@ def run_the_game(my_agents, num_candidates, num_donors):
         cand_, don_ = reset_universe(my_agents, num_candidates, num_donors)
         print('Number of candidates {}'.format(len(cand_)))
         print('Number of donors {}'.format(len(don_)))
-        # Reseting total donated
+        # Resetting total donated
         [d.reset_total_donated() for d in don_]
         # Donation
-        percentages = random.random(len(don_))
+        a = random.uniform(0, 1, len(don_))
 
         for i, d in enumerate(don_):
             c = random.choice(cand_)
             # Donation based on percentage of income or given amount
-            a = random.uniform(0, 1)
             if each == 'Case 1 Percentage ceiling':
                 # Choosing value from 0 to 1 and truncating at ceiling
-                if a > cases[each][1]:
-                    a = cases[each][1]
-                c.update_treasure(d.donate(percentage=a))
+                if a[i] > cases[each][1]:
+                    a[i] = cases[each][1]
+                c.update_treasure(d.donate(percentage=a[i]))
             elif each == 'Case 2 Nominal ceiling':
-                if a > cases[each][1]:
-                    a = cases[each][1]
-                c.update_treasure(d.donate(amount=a))
+                if a[i] > cases[each][1]:
+                    a[i] = cases[each][1]
+                c.update_treasure(d.donate(amount=a[i]))
             else:
-                c.update_treasure(d.donate(amount=a))
+                c.update_treasure(d.donate(amount=a[i]))
         gini, m = call_plot([d.get_cumulative_donation() for d in don_], each, cases[each][2])
         average_gini[each].append(gini)
         average_donation[each].append(m)
