@@ -1,8 +1,8 @@
-from numba import jit
+import numba as nb
 from numpy import cumsum, insert
 
-
-@jit
+# # nb.jit(nopython=True) is a shortcut for @nb.njit()
+# @nb.njit()
 def Gini(values):
 
     n = len(values)

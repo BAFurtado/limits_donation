@@ -43,20 +43,20 @@ def run_the_game(my_agents, num_candidates, num_donors):
     print('')
     print('Testing three cases')
 
-    cases = {'Case 1 Percentage ceiling': ['Donation ceiling set at {}% of income'
+    cases = {'Caso 1 Teto percentual': ['Donation ceiling set at {}% of income'
                                                .format(parameters.income_percentage_case1 * 100),
                                            parameters.income_percentage_case1, 'blue'],
-             'Case 2 Nominal ceiling': ['Donation ceiling set at Nominal value of {}'
+             'Caso 2 Teto nominal': ['Donation ceiling set at Nominal value of {}'
                                             .format(parameters.ceiling_amount), parameters.ceiling_amount, 'red'],
-             'Case 3 No ceiling': ['Donation with no ceiling', None, 'green']}
+             'Caso 3 Sem teto': ['Donation with no ceiling', None, 'green']}
 
-    average_gini = {'Case 1 Percentage ceiling': [],
-                    'Case 2 Nominal ceiling': [],
-                    'Case 3 No ceiling': []}
+    average_gini = {'Caso 1 Teto percentual': [],
+                    'Caso 2 Teto nominal': [],
+                    'Caso 3 Sem teto': []}
 
-    average_donation = {'Case 1 Percentage ceiling': [],
-                    'Case 2 Nominal ceiling': [],
-                    'Case 3 No ceiling': []}
+    average_donation = {'Caso 1 Teto percentual': [],
+                    'Caso 2 Teto nominal': [],
+                    'Caso 3 Sem teto': []}
 
     for each in cases.keys():
         print('')
@@ -73,12 +73,12 @@ def run_the_game(my_agents, num_candidates, num_donors):
         for i, d in enumerate(don_):
             c = random.choice(cand_)
             # Donation based on percentage of income or given amount
-            if each == 'Case 1 Percentage ceiling':
+            if each == 'Caso 1 Teto percentual':
                 # Choosing value from 0 to 1 and truncating at ceiling
                 if a[i] > cases[each][1]:
                     a[i] = cases[each][1]
                 c.update_treasure(d.donate(percentage=a[i]))
-            elif each == 'Case 2 Nominal ceiling':
+            elif each == 'Caso 2 Teto nominal':
                 if a[i] > cases[each][1]:
                     a[i] = cases[each][1]
                 c.update_treasure(d.donate(amount=a[i]))
@@ -105,8 +105,8 @@ def call_plot(values, case, color):
     # Plot
     plt.plot([0, 100], [0, 100], '--', color='yellow')
     plt.plot(some_results[1][0], some_results[1][1], color=color, label=case, lw=lw)
-    plt.xlabel('% of population')
-    plt.ylabel('% of values')
+    plt.xlabel('% da população')
+    plt.ylabel('% dos valores')
     return some_results[0], m
 
 
@@ -117,13 +117,13 @@ def repetition():
     # Ex-ante GINI
     call_plot(parameters.income_list, 'Ex-ante', 'black')
     # Empty dictionaries
-    average_gini = {'Case 1 Percentage ceiling': [],
-                    'Case 2 Nominal ceiling': [],
-                    'Case 3 No ceiling': []}
+    average_gini = {'Caso 1 Teto percentual': [],
+                    'Caso 2 Teto nominal': [],
+                    'Caso 3 Sem teto': []}
 
-    average_donation = {'Case 1 Percentage ceiling': [],
-                        'Case 2 Nominal ceiling': [],
-                        'Case 3 No ceiling': []}
+    average_donation = {'Caso 1 Teto percentual': [],
+                        'Caso 2 Teto nominal': [],
+                        'Caso 3 Sem teto': []}
 
     # Numerous runs
     for i in range(parameters.number_runs):
@@ -138,18 +138,18 @@ def repetition():
             average_donation[each].append(donation[each])
 
     # General output
-    m_g_1 = median(average_gini['Case 1 Percentage ceiling'])
-    m_d_1 = median(average_donation['Case 1 Percentage ceiling'])
-    m_g_2 = median(average_gini['Case 2 Nominal ceiling'])
-    m_d_2 = median(average_donation['Case 2 Nominal ceiling'])
-    m_g_3 = median(average_gini['Case 3 No ceiling'])
-    m_d_3 = median(average_donation['Case 3 No ceiling'])
+    m_g_1 = median(average_gini['Caso 1 Teto percentual'])
+    m_d_1 = median(average_donation['Caso 1 Teto percentual'])
+    m_g_2 = median(average_gini['Caso 2 Teto nominal'])
+    m_d_2 = median(average_donation['Caso 2 Teto nominal'])
+    m_g_3 = median(average_gini['Caso 3 Sem teto'])
+    m_d_3 = median(average_donation['Caso 3 Sem teto'])
 
     print('')
     print('Overall Gini averages')
-    print('Case 1 Percentage ceiling: median Gini {:.4} Donated value median {:.4}'.format(m_g_1, m_d_1))
-    print('Case 2 Nominal ceiling: median Gini {:.4} Donated value {:.4}'.format(m_g_2, m_d_2))
-    print('Case 3 No ceiling: median Gini{:.4} Donated value median {:.4}'
+    print('Caso 1 Teto percentual: median Gini {:.4} Donated value median {:.4}'.format(m_g_1, m_d_1))
+    print('Caso 2 Teto nominal: median Gini {:.4} Donated value {:.4}'.format(m_g_2, m_d_2))
+    print('Caso 3 Sem teto: median Gini{:.4} Donated value median {:.4}'
           .format(m_g_3, m_d_3))
 
     with open('output.csv', 'a') as f:
@@ -158,11 +158,11 @@ def repetition():
         f.write('{:.12f};{:.12f}\n'.format(m_g_2, m_d_2))
         f.write('{:.12f};{:.12f}\n'.format(m_g_3, m_d_3))
 
-    dark_patch = mpatches.Patch(color='black', label='Ex-ante pop. income')
-    blue_patch = mpatches.Patch(color='blue', label='Case 1 Percentage ceiling: {}%'
+    dark_patch = mpatches.Patch(color='black', label='Renda da população')
+    blue_patch = mpatches.Patch(color='blue', label='Caso 1 Teto percentual: {}%'
                                 .format(parameters.income_percentage_case1 * 100))
-    red_patch = mpatches.Patch(color='red', label='Case 2 Nominal ceiling: {}'.format(parameters.ceiling_amount))
-    green_patch = mpatches.Patch(color='green', label='Case 3 No ceiling')
+    red_patch = mpatches.Patch(color='red', label='Caso 2 Teto nominal: {}'.format(parameters.ceiling_amount))
+    green_patch = mpatches.Patch(color='green', label='Caso 3 Sem teto')
 
     plt.legend(handles=[dark_patch, blue_patch, red_patch, green_patch], loc='upper left', frameon=False)
     plt.savefig('figures_png/fig_perc{}_nom{}.png'
@@ -171,7 +171,9 @@ def repetition():
     plt.savefig('figures_pdf/fig_perc{}_nom{}.pdf'
                 .format(parameters.income_percentage_case1, parameters.ceiling_amount),
                 format='pdf', transparent=True)
-
+    plt.savefig('figures_eps/fig_perc{}_nom{}.eps'
+                .format(parameters.income_percentage_case1, parameters.ceiling_amount),
+                format='eps', transparent=True)
 
 def overriding_parameters():
     if os.path.exists('output.csv'):
